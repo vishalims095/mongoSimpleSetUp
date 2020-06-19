@@ -38,5 +38,5 @@ app.get('/test', async(req, res) => {
 
 
 app.listen(3000, ()=> {
-    console.log("running")
+    console.log("running on port 3000")
 })
