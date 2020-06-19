@@ -21,6 +21,9 @@ let userSchema = mongoose.Schema({
 var UserModel = conn.model('User', userSchema);
 // register api 
 
+app.get('/test', async(req, res) => {
+    res.status(200).json({message : "Working Fine"})
+})
 
 app.post('/register',async (req, res) => {
     console.log("register calling", req.body)
