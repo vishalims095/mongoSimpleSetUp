@@ -1,17 +1,38 @@
 var express = require('express')
 var app = express()
+const path = require('path');
+var cors = require ("cors");
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
+app.use(cors());
+const allowedExt = [
+    '.js',
+    '.ico',
+    '.css',
+    '.png',
+    '.jpg',
+    '.woff2',
+    '.woff',
+    '.ttf',
+    '.svg',
+];
+let initRoutes = ()=>{
+    console.log("comming")
+
+    app.use('/userWeb',express.static(path.join(__dirname, '' ,'dist' ,'addAddress')));
+        app.get('/userWeb/*', (req, res) => {
+        res.sendFile(path.join(__dirname,'','dist','addAddress' ,'index.html'));
+    })
+        
+  }
+
 const mongoose = require('mongoose');
-const conn = mongoose.createConnection("mongodb://127.0.0.1:27017/dbTry");;
+const conn = mongoose.createConnection("mongodb://127.0.0.1:27017/assignmentNew");;
 exports.mongoose = mongoose;
 exports.conn = conn;
 let userSchema = mongoose.Schema({
-    name : {
-        type : String,
-        default : null
-    }
-},
+    addressData : [],
+    },
     {
         strict: true,
         collection: 'user',
@@ -19,24 +40,20 @@ let userSchema = mongoose.Schema({
     }
 )
 var UserModel = conn.model('User', userSchema);
-// register api 
 
-app.get('/test', async(req, res) => {
-    res.status(200).json({message : "Working Fine"})
-})
-
-app.post('/register',async (req, res) => {
-    console.log("register calling", req.body)
-    let {name} = req.body;
-    let newUser = new UserModel({name})
+// save Address
+app.post('/saveAddress',async (req, res) => {
+    console.log("saveAddress calling", req.body)
+    let {addressData} = req.body;
+    let newUser = new UserModel({addressData})
     let saveUser = await newUser.save()
     if(!newUser) {
-        return res.status(403).json({message : "Unable to Register."})
-    } res.status(200).json({response : saveUser, message : "Register successful."})
+        return res.status(403).json({message : "Unable to save address."})
+    } res.status(200).json({response : saveUser, message : "address saved successful."})
 })
 
 
-
+initRoutes(app);
 app.listen(3000, ()=> {
     console.log("running")
 })
