@@ -170,6 +170,7 @@ class AddressComponent {
             console.log("save calling", this.mainUsage);
             this.service.post('saveAddress', { addressData: this.mainUsage }, 0).subscribe(res => {
                 alert('Data saved');
+                window.location.reload();
             }, error => {
                 alert('Something went wrong');
             });
